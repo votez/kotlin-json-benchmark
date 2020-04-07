@@ -1,0 +1,52 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.71'
+    id "me.champeau.gradle.jmh" version "0.5.0"
+    id "org.jetbrains.kotlin.kapt" version "1.3.71"
+    id "io.morethan.jmhreport" version "0.9.0"
+}
+
+ext.kotlin_version = '1.3.71'
+
+group 'name.votez'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2"
+    implementation "org.danilopianini:gson-extras:0.2.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.2")
+    implementation("com.squareup.moshi:moshi-adapters:1.9.2")
+
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.2")
+
+
+    jmh 'org.openjdk.jmh:jmh-core:0.9'
+    jmh 'org.openjdk.jmh:jmh-generator-annprocess:0.9'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+kapt {
+    useBuildCache = false
+}
+jmh {
+    humanOutputFile = project.file("build/reports/jmh/human.txt")
+    resultsFile = project.file("build/reports/jmh/results.csv")
+    resultFormat  = "CSV"
+}
+
+jmhReport {
+    jmhResultPath = project.file('build/reports/jmh/results.json')
+    jmhReportOutput = project.file('build/reports/jmh')
+}
