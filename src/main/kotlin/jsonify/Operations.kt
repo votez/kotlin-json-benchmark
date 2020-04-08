@@ -1,3 +1,5 @@
+package jsonify
+
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.squareup.moshi.JsonClass
@@ -7,8 +9,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.PROPERTY, property="op")
 @JsonSubTypes(
-    JsonSubTypes.Type(value=Add::class, name="add"),
-    JsonSubTypes.Type(value=Increment::class, name="inc"))
+    JsonSubTypes.Type(value= Add::class, name="add"),
+    JsonSubTypes.Type(value= Substract::class, name="sub"),
+    JsonSubTypes.Type(value= Decrement::class, name="dec"),
+    JsonSubTypes.Type(value= Increment::class, name="inc"))
 sealed class Operation
 
 @Serializable
@@ -19,6 +23,14 @@ data class Add(val left: Int, val right: Int): Operation()
 @SerialName("inc")
 @JsonClass(generateAdapter = true)
 data class Increment(val operand: Int): Operation()
+@Serializable
+@SerialName("sub")
+@JsonClass(generateAdapter = true)
+data class Substract(val left: Int, val right: Int): Operation()
+@Serializable
+@SerialName("dec")
+@JsonClass(generateAdapter = true)
+data class Decrement(val operand: Int): Operation()
 
 val serializedArray = """[
     {
