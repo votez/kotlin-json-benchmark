@@ -61,10 +61,6 @@ val serializedSimple = """
 @Serializable
 @JsonClass(generateAdapter = true)
 data class MediumPayload(val number: Int, val agent: Boolean,
-                         val firstName: String, val lastName: String, val birthPlace: String,
+                         val first: String, val last: String, val birth: String,
                          val age: Int, val origin: String, val passport: String
 )
-
-@Serializable
-@JsonClass(generateAdapter = true)
-data class ShortPayload(val number: Int, val name: String)

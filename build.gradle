@@ -17,7 +17,8 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3"
+    implementation "com.fasterxml.jackson.module:jackson-module-afterburner:2.10.3"
     implementation "org.danilopianini:gson-extras:0.2.2"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
     implementation("com.squareup.moshi:moshi-kotlin:1.9.2")
