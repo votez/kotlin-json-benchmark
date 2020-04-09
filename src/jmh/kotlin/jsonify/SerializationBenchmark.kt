@@ -17,6 +17,7 @@ import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
 import org.openjdk.jmh.runner.Runner
 import org.openjdk.jmh.runner.options.OptionsBuilder
+import org.openjdk.jmh.util.NullOutputStream
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -26,11 +27,11 @@ import kotlin.random.Random
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
 @Warmup(iterations = 6)
-@Measurement(iterations = 3, time = 240, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 2, time = 240, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 open class SerializationBenchmark {
     companion object {
-        const val SIZE = 500
+        const val SIZE = 300
         private val r = Random.Default
     }
 
@@ -49,6 +50,7 @@ open class SerializationBenchmark {
 
     private val moshiOperationAdapter = moshiOperation.adapter(Operation::class.java)
 
+    private val outputStream = NullOutputStream()
     private val moshiMedium = Moshi.Builder()
         .build().adapter(MediumPayload::class.java)
     private val moshiShort = Moshi.Builder()
@@ -263,7 +265,7 @@ open class SerializationBenchmark {
     @OperationsPerInvocation(SIZE)
     @Group("polymorphicWrite")
     fun polymorphicWriteJackson(sink: Blackhole, state: BenchmarkState) = state.polymorphicObjects.forEach {
-        sink.consume(jacksonOperationWriter.writeValueAsString(it))
+        jacksonOperationWriter.writeValue(outputStream, it)
     }
 
     @Benchmark
@@ -290,8 +292,8 @@ open class SerializationBenchmark {
     @Benchmark
     @OperationsPerInvocation(SIZE)
     @Group("mediumWrite")
-    fun mediumWriteJackson(sink: Blackhole, state: BenchmarkState) = state.mediumObjects.forEach {
-        sink.consume(jacksonMediumPayloadWriter.writeValueAsString(it))
+    fun mediumWriteJackson(state: BenchmarkState) = state.mediumObjects.forEach {
+        jacksonMediumPayloadWriter.writeValue(outputStream, it)
     }
 
     @Benchmark
@@ -319,8 +321,8 @@ open class SerializationBenchmark {
     @OperationsPerInvocation(SIZE)
     @Group("shortWrite")
     @GroupThreads(1)
-    fun shortWriteJackson(sink: Blackhole, state: BenchmarkState) = state.shortObjects.forEach {
-        sink.consume(jacksonShortPayloadWriter.writeValueAsString(it))
+    fun shortWriteJackson(state: BenchmarkState) = state.shortObjects.forEach {
+        jacksonShortPayloadWriter.writeValue(outputStream, it)
     }
 
 
